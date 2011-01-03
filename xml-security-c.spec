@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	tests		# build without tests
 %bcond_without	static_libs	# don't build static libraries
-%bcond_without	xalan_c		# build without xalan-c (XPath and XSLT transformations cannot be performed)
+%bcond_without	xalan		# build without xalan-c (XPath and XSLT transformations cannot be performed)
 
 Summary:	C++ Implementation of W3C security standards for XML
 Name:		xml-security-c
@@ -13,10 +13,11 @@ Group:		Libraries
 URL:		http://santuario.apache.org/c/
 Source0:	http://santuario.apache.org/dist/c-library/%{name}-%{version}.tar.gz
 # Source0-md5:	2c47c4ec12e8d6abe967aa5e5e99000c
+Patch0:		%{name}-1.5.1-xalan-c-1.11-compat.patch
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
-%{?with_xalan_c:BuildRequires:	xalan-c-devel}
+%{?with_xalan:BuildRequires:	xalan-c-devel}
 BuildRequires:	xerces-c-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -33,7 +34,7 @@ Summary:	Development files for xml-security-c
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	openssl-devel
-%{?with_xalan_c:Requires:	xalan-c-devel}
+%{?with_xalan:Requires:	xalan-c-devel}
 Requires:	xerces-c-devel
 
 %description devel
@@ -51,8 +52,10 @@ Static xml-security-c library.
 
 %prep
 %setup -q
+%patch0 -p1
+
 # Remove bogus "-O2" from CXXFLAGS to avoid overriding RPM_OPT_FLAGS.
-sed -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure
+%{__sed} -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure
 
 %build
 %configure \

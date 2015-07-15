@@ -7,7 +7,7 @@
 Summary:	C++ Implementation of W3C security standards for XML
 Name:		xml-security-c
 Version:	1.5.1
-Release:	1
+Release:	2
 License:	ASL 2.0
 Group:		Libraries
 URL:		http://santuario.apache.org/c/

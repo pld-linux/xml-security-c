@@ -15,6 +15,7 @@ License:	Apache v2.0
 Group:		Libraries
 Source0:	http://www.apache.org/dist/santuario/c-library/%{name}-%{version}.tar.bz2
 # Source0-md5:	61130e3273bed410e607d9710eef9de2
+Patch0:		%{name}-c++.patch
 URL:		http://santuario.apache.org/cindex.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -77,11 +78,13 @@ Statyczna biblioteka xml-security-c.
 
 %prep
 %setup -q
+%patch0 -p1
 
 # Remove bogus "-O2" from CXXFLAGS to avoid overriding optflags.
 %{__sed} -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure.ac
 
 %build
+# refresh lt for as-needed to work
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}

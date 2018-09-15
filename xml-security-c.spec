@@ -10,7 +10,7 @@ Summary:	C++ Implementation of W3C security standards for XML
 Summary(pl.UTF-8):	Implementacja w C++ standardów bezpieczeństwa W3C dla XML
 Name:		xml-security-c
 Version:	1.7.3
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Libraries
 Source0:	http://www.apache.org/dist/santuario/c-library/%{name}-%{version}.tar.bz2

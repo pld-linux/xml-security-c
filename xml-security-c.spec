@@ -9,13 +9,12 @@
 Summary:	C++ Implementation of W3C security standards for XML
 Summary(pl.UTF-8):	Implementacja w C++ standardów bezpieczeństwa W3C dla XML
 Name:		xml-security-c
-Version:	1.7.3
-Release:	2
+Version:	2.0.1
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 Source0:	http://www.apache.org/dist/santuario/c-library/%{name}-%{version}.tar.bz2
-# Source0-md5:	61130e3273bed410e607d9710eef9de2
-Patch0:		%{name}-c++.patch
+# Source0-md5:	c6a36167967e5a526e060cab42ee4791
 URL:		http://santuario.apache.org/cindex.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -52,8 +51,8 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libstdc++-devel
 %{?with_nss:Requires:	nss-devel >= 3}
-%{?with_openssl:Requires:	openssl-devel}
-%{?with_xalan:Requires:	xalan-c-devel}
+%{?with_openssl:Requires: openssl-devel}
+%{?with_xalan:Requires: xalan-c-devel}
 Requires:	xerces-c-devel >= 2.0
 
 %description devel
@@ -78,7 +77,6 @@ Statyczna biblioteka xml-security-c.
 
 %prep
 %setup -q
-%patch0 -p1
 
 # Remove bogus "-O2" from CXXFLAGS to avoid overriding optflags.
 %{__sed} -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure.ac
@@ -99,7 +97,7 @@ Statyczna biblioteka xml-security-c.
 
 %if %{with tests}
 # Verify that what was compiled actually works.
-xsec/xtest
+xsec/xsec-xtest
 %endif
 
 %install
@@ -123,12 +121,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc CHANGELOG.txt INSTALL.txt NOTICE.txt
 %attr(755,root,root) %{_libdir}/libxml-security-c.so.*.*.*
-%ghost %attr(755,root,root) %{_libdir}/libxml-security-c.so.17
+%ghost %attr(755,root,root) %{_libdir}/libxml-security-c.so.20
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libxml-security-c.so
 %{_includedir}/xsec
+%{_pkgconfigdir}/xml-security-c.pc
 
 %if %{with static_libs}
 %files static

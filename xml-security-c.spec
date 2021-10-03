@@ -9,12 +9,12 @@
 Summary:	C++ Implementation of W3C security standards for XML
 Summary(pl.UTF-8):	Implementacja w C++ standardów bezpieczeństwa W3C dla XML
 Name:		xml-security-c
-Version:	2.0.1
+Version:	2.0.2
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
 Source0:	http://www.apache.org/dist/santuario/c-library/%{name}-%{version}.tar.bz2
-# Source0-md5:	c6a36167967e5a526e060cab42ee4791
+# Source0-md5:	3bdb34cd2f41f08e339132edd8eb7729
 URL:		http://santuario.apache.org/cindex.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -82,6 +82,7 @@ Statyczna biblioteka xml-security-c.
 %{__sed} -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure.ac
 
 %build
+export CXXFLAGS="%{rpmcxxflags} -fpermissive"
 # refresh lt for as-needed to work
 %{__libtoolize}
 %{__aclocal} -I m4

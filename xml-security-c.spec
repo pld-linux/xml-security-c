@@ -9,23 +9,23 @@
 Summary:	C++ Implementation of W3C security standards for XML
 Summary(pl.UTF-8):	Implementacja w C++ standardów bezpieczeństwa W3C dla XML
 Name:		xml-security-c
-Version:	2.0.2
+Version:	2.0.4
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
-Source0:	http://www.apache.org/dist/santuario/c-library/%{name}-%{version}.tar.bz2
-# Source0-md5:	3bdb34cd2f41f08e339132edd8eb7729
-URL:		http://santuario.apache.org/cindex.html
+Source0:	https://downloads.apache.org/santuario/c-library/%{name}-%{version}.tar.bz2
+# Source0-md5:	53d202a6c8d082bd8291c727f4918db5
+URL:		https://santuario.apache.org/cindex.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:1.5
+BuildRequires:	libtool >= 2:2
 %{?with_nss:BuildRequires:	nss-devel >= 3}
 %{?with_openssl:BuildRequires:	openssl-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
-%{?with_xalan:BuildRequires:	xalan-c-devel}
-BuildRequires:	xerces-c-devel >= 2.0
+%{?with_xalan:BuildRequires:	xalan-c-devel >= 1.11}
+BuildRequires:	xerces-c-devel >= 3.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -52,8 +52,8 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	libstdc++-devel
 %{?with_nss:Requires:	nss-devel >= 3}
 %{?with_openssl:Requires: openssl-devel}
-%{?with_xalan:Requires: xalan-c-devel}
-Requires:	xerces-c-devel >= 2.0
+%{?with_xalan:Requires: xalan-c-devel >= 1.11}
+Requires:	xerces-c-devel >= 3.2
 
 %description devel
 This package provides development files for xml-security-c, a C++
@@ -78,11 +78,7 @@ Statyczna biblioteka xml-security-c.
 %prep
 %setup -q
 
-# Remove bogus "-O2" from CXXFLAGS to avoid overriding optflags.
-%{__sed} -i -e 's/-O2 -DNDEBUG/-DNDEBUG/g' configure.ac
-
 %build
-export CXXFLAGS="%{rpmcxxflags} -fpermissive"
 # refresh lt for as-needed to work
 %{__libtoolize}
 %{__aclocal} -I m4
@@ -90,10 +86,10 @@ export CXXFLAGS="%{rpmcxxflags} -fpermissive"
 %{__autoheader}
 %{__automake}
 %configure \
-	%{?with_nss:--with-nss} \
+	%{!?with_nss:--without-nss} \
 	%{!?with_openssl:--without-openssl} \
 	%{!?with_xalan:--without-xalan} \
-	%{!?with_static_libs:--disable-static}
+	%{?with_static_libs:--enable-static}
 %{__make}
 
 %if %{with tests}
@@ -108,9 +104,12 @@ rm -rf $RPM_BUILD_ROOT
 	CPPROG="cp -p" \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libxml-security-c.la
+
 # Do not ship library test utilities. These are only needed for
 # xml-security-c developers and they should have the whole source anyway.
-%{__rm} -r $RPM_BUILD_ROOT%{_bindir}
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/xsec-xtest
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -121,6 +120,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGELOG.txt INSTALL.txt NOTICE.txt
+%attr(755,root,root) %{_bindir}/xsec-c14n
+%attr(755,root,root) %{_bindir}/xsec-checksig
+%attr(755,root,root) %{_bindir}/xsec-cipher
+%attr(755,root,root) %{_bindir}/xsec-siginf
+%attr(755,root,root) %{_bindir}/xsec-templatesign
+%attr(755,root,root) %{_bindir}/xsec-txfmout
+%attr(755,root,root) %{_bindir}/xsec-xklient
 %attr(755,root,root) %{_libdir}/libxml-security-c.so.*.*.*
 %ghost %attr(755,root,root) %{_libdir}/libxml-security-c.so.20
 
